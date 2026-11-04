@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is Being Built in My Neighborhood?</title>
+    <style>
+        /* Pudding-style typography and minimalist color palette */
+        :root {
+            --bg-color: #f4f4f0;
+            --text-color: #111111;
+            --accent-color: #ff4b4b;
+            --secondary-color: #4a6fa5;
+            --card-bg: #ffffff;
+            --border-color: #ddddda;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Intro Header Layout */
+        header {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 6rem 1.5rem 4rem 1.5rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .byline {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .intro-text {
+            font-size: 1.2rem;
+            color: #333;
+            text-align: left;
+        }
+
+        /* Scrollytelling Container Setup */
+        #scrolly {
+            position: relative;
+            display: flex;
+            background-color: var(--bg-color);
+            padding: 1rem;
+        }
+
+        /* Text steps container */
+        article {
+            position: relative;
+            padding: 0 1rem;
+            max-width: 450px;
+            width: 100%;
+            z-index: 10;
+        }
+
+        /* Individual text scroll block */
+        .step {
+            margin: 0 auto 70vh auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: var(--text-color);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            opacity: 0.3;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: scale(0.98);
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: scale(1);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .step h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            color: var(--text-color);
+        }
+
+        /* Sticky Visual Sidebar Panel */
+        .sticky-graphic {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 5vh;
+            right: 0;
+            width: 100%;
+            height: 90vh;
+            margin-left: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.02);
+            overflow: hidden;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Dynamic Visual Components inside Sticky Panel */
+        .visual-content {
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .visual-content.active {
+            display: flex;
+        }
+
+        /* Visual Element Styling */
+        .notice-sign {
+            background-color: #ffe600;
+            color: #000;
+            padding: 2rem;
+            font-family: monospace;
+            border: 4px solid #000;
+            font-weight: bold;
+            box-shadow: 5px 5px 0px #000;
+            max-width: 350px;
+        }
+
+        .map-mockup {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #e3edd5 20%, #d4e3c4 80%);
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .map-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .map-marker:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .compare-box {
+            flex: 1;
+            padding: 1.5rem;
+            border: 1px dashed #bbb;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.7rem;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge.approved { background-color: #d4edda; color: #155724; }
+        .badge.pending { background-color: #fff3cd; color: #856404; }
+
+        .pudding-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid var(--secondary-color);
+            transition: background 0.2s;
+        }
+
+        .pudding-link:hover {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 5rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 75, 75, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0); }
+        }
+
+        /* Responsive UI logic */
+        @media (max-width: 768px) {
+            #scrolly { flex-direction: column-reverse; }
+            .sticky-graphic { position: fixed; top: 0; left:0; width: 100vw; height: 45vh; margin: 0; z-index: 1; }
+            article { margin-top: 50vh; max-width: 100%; padding: 0; z-index: 10; }
+            .step { margin-bottom: 60vh; background: rgba(255,255,255,0.98); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>What Is Being Built in My Neighborhood?</h1>
+        <div class="byline">An Ann Arbor Development Tracker Mockup</div>
+        <p class="intro-text">
+            City zoning laws, master plans, and site blueprints can feel intentionally designed to hide what is changing in our community. Scroll down to see how structural data analysis can bring context back to city development.
+        </p>
+    </header>
+
+    <main>
+        <section id="scrolly">
+            
+            <!-- Text Steps (Left Side scrolling column) -->
+            <article>
+                <div class="step" data-step="0">
+                    <h3>The Confusing Notice</h3>
+                    <p>It starts when you see a yellow zoning notice attached to a post on your block. Filled with jargon like <i>"PUD Amendment"</i> and <i>"FAR exemptions"</i>, it fails to explain anything to actual residents.</p>
+                </div>
+                
+                <div class="step" data-step="1">
+                    <h3>The Map Context</h3>
+                    <p>Instead of struggling through municipal site portals, your project places this tracking notice onto a clean, searchable city matrix. Here is our single case study property located right in downtown Ann Arbor.</p>
+                </div>
+                
+                <div class="step" data-step="2">
+                    <h3>415 W Washington St</h3>
+                    <p>By targeting records at the exact address tier, we map the historical landscape of the property before the redevelopment occurs.</p>
+                    <div style="margin-top:0.5rem; font-size:0.9rem; color:#555;"><b>Current State:</b> Former city maintenance yard, historical chimney stack, vacant structure.</div>
+                </div>
+                
+                <div class="step" data-step="3">
+                    <h3>The Proposal Breakdown</h3>
+                    <p>Instead of masking the changes behind a simple dot on a map, the project extracts data variants to run direct visual modifications side-by-side.</p>
+                </div>
+                
+                <div class="step" data-step="4">
+                    <h3>Zoning & Blueprints</h3>
+                    <p>The code cross-references the official Ann Arbor Planning platform to track specific zoning adaptations.</p>
+                    <a href="https://a2gov.org" target="_blank" class="pudding-link">Examine A2 Zoning Data →</a>
+                </div>
+                
+                <div class="step" data-step="5">
