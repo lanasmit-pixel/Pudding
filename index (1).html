@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is being built near me? (mockup)</title>
+<style>
+:root{--bg:#eef3f1;--ink:#14213d;--tomato:#ff5a36;--sun:#ffc928;--teal:#1b998b;--pink:#ff8fb1;--line:#cfd9d5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:19px/1.6 Georgia,"Times New Roman",serif;color:var(--ink);background:var(--bg) radial-gradient(#c9d6d1 1.2px,transparent 1.2px) 0 0/22px 22px}
+h1,h2,.ui{font-family:"Arial Black","Helvetica Neue",Arial,sans-serif}
+.hand{font-family:"Bradley Hand","Segoe Script","Comic Sans MS",cursive;color:var(--tomato);font-size:1.3rem;line-height:1.1}
+header{max-width:900px;margin:0 auto;padding:9vh 1.3rem 2vh;text-align:center}
+h1{font-size:clamp(2.3rem,7vw,4.6rem);line-height:1;letter-spacing:-.03em}
+h1 span{display:inline-block;background:var(--sun);padding:0 .25em;rotate:-2deg}
+.sub{max-width:560px;margin:1.2rem auto 0}
+.note{font:.8rem Arial,sans-serif;color:#556}
+.sec{max-width:1000px;margin:0 auto;padding:7vh 1.3rem;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:2.2rem;align-items:center}
+.sec:nth-of-type(even) .txt{order:2}
+h2{font-size:clamp(1.6rem,3.4vw,2.2rem);line-height:1.1;margin-bottom:.8rem;letter-spacing:-.02em}
+.txt p{margin-bottom:.8rem}
+.stage{position:relative;height:440px;cursor:pointer}
+.stage.wide{max-width:900px;margin:0 auto;height:360px;grid-column:1/-1}
+.stage .cap{position:absolute;left:0;bottom:-1.6rem;font:.75rem Arial,sans-serif;color:#667}
+.abs{position:absolute}
+/* pop animation */
+.pop{opacity:0;rotate:var(--r,0deg);transition:rotate .25s}
+.in .pop{animation:pop .65s var(--d,0s) cubic-bezier(.3,1.7,.5,1) forwards}
+.pop:hover{rotate:calc(var(--r,0deg) + 3deg)}
+@keyframes pop{from{opacity:0;scale:.2;translate:0 -36px}to{opacity:1;scale:1;translate:0 0}}
+/* pieces */
+.sign{background:var(--sun);border:4px solid #000;padding:1.1rem;font:700 .9rem/1.4 "Courier New",monospace;box-shadow:6px 6px 0 #000}
+.sign mark{background:var(--tomato);color:#fff;padding:0 .2rem}
+.sign small{display:block;margin-top:.6rem;font-weight:400}
+.bub{display:grid;place-items:center;border-radius:50%;font:1.2rem "Arial Black",Arial,sans-serif;color:#fff;border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.map{border:3px solid var(--ink);border-radius:14px;overflow:hidden;box-shadow:6px 6px 0 var(--ink);background:#e1ecd3}
+.map svg{display:block;width:100%;height:100%}
+.pin{width:30px;height:30px;display:block}
+.pin i{display:block;width:30px;height:30px;background:var(--tomato);border:3px solid var(--ink);border-radius:50% 50% 50% 0;rotate:-45deg}
+.pin.me i{background:var(--teal)}
+.ring{width:150px;height:150px;border-radius:50%;border:3px dashed var(--teal)}
+.sbar{display:flex;font:1rem Arial,sans-serif;border:3px solid var(--ink);background:#fff;box-shadow:5px 5px 0 var(--ink)}
+.sbar .t{flex:1;padding:.7rem .9rem;overflow:hidden;white-space:nowrap}
+.in .type{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;width:0;border-right:2px solid var(--ink);animation:typing 1.6s .7s steps(16) forwards}
+@keyframes typing{to{width:9.5em}}
+.sbar b{background:var(--ink);color:#fff;padding:.7rem 1rem;font-weight:400}
+.card{background:#fff;border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:1rem;font:15px/1.45 Arial,sans-serif}
+.card h3{font-size:1.1rem}
+.tag{display:inline-block;font-size:.78rem;padding:.1rem .6rem;border-radius:99px;background:var(--pink);border:2px solid var(--ink);margin:.3rem 0}
+.btn{display:inline-block;background:var(--ink);color:#fff;padding:.45rem .9rem}
+.nf{color:#667;font-style:italic}
+.polaroid{background:#fff;padding:10px 10px 38px;box-shadow:4px 6px 14px rgba(0,0,0,.25);font:.9rem Arial,sans-serif;position:relative}
+.polaroid i{display:block;height:130px;background:repeating-linear-gradient(45deg,#eee,#eee 8px,#e0e0e0 8px,#e0e0e0 16px);color:#888;font:.72rem Arial,sans-serif;padding:.4rem;font-style:normal}
+.polaroid .hand{position:absolute;left:12px;bottom:6px}
+.tape{position:absolute;top:-10px;left:50%;width:70px;height:20px;background:rgba(255,201,40,.7);rotate:-4deg;translate:-50% 0}
+.doc{background:#fff;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:.8rem 1rem;font:14px/1.4 Arial,sans-serif}
+.doc b{display:block;font-family:"Arial Black",Arial;margin-bottom:.2rem}
+.tl{border-left:4px solid var(--ink);padding:.1rem 0 .1rem 1rem;font:15px/1.4 Arial,sans-serif;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:.7rem 1rem;border:3px solid var(--ink)}
+.tl.now{background:var(--sun)}
+footer{max-width:700px;margin:0 auto;padding:8vh 1.3rem 10vh;text-align:center}
+@media(max-width:800px){
+ .sec{grid-template-columns:1fr}
+ .sec:nth-of-type(even) .txt{order:0}
+ .stage{height:400px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pop{opacity:1;animation:none!important}
+ .in .type,.type{width:9.5em;animation:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+ <h1>A yellow sign went up on my block. <span>What does it mean?</span></h1>
+ <p class="sub">A storyboard of how a map of Ann Arbor development could explain it. Scroll, and click any scene to replay it.</p>
+ <p class="note" style="margin-top:.8rem">Mockup only. All content is placeholder, not real city data.</p>
+</header>
+
+<div class="sec" style="padding-top:2vh">
+ <div class="stage wide" aria-label="A confusing yellow notice surrounded by question marks">
+  <div class="abs pop sign" style="--r:-3deg;left:31%;top:12%;width:290px"><span class="ui">NOTICE OF PUBLIC HEARING</span><br>Request: <mark>PUD AMENDMENT</mark> and <mark>FAR EXEMPTION</mark><small>Questions? See the city clerk.</small></div>
+  <div class="abs pop bub" style="--r:8deg;--d:.5s;left:8%;top:14%;width:90px;height:90px;background:var(--teal)">PUD?</div>
+  <div class="abs pop bub" style="--r:-6deg;--d:.7s;right:9%;top:6%;width:84px;height:84px;background:var(--tomato)">FAR?!</div>
+  <div class="abs pop bub" style="--r:5deg;--d:.9s;left:18%;bottom:8%;width:64px;height:64px;background:var(--pink);color:var(--ink)">???</div>
+  <div class="abs pop bub" style="--r:-9deg;--d:1.1s;right:20%;bottom:10%;width:74px;height:74px;background:var(--ink)">huh</div>
+  <div class="abs pop hand" style="--r:-4deg;--d:1.3s;left:40%;bottom:6%">it says nothing about what's being built</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>The facts exist. They're just scattered.</h2><p>Zoning rules, site plans, and meeting agendas live in different places. Most neighbors never find them all.</p></div>
+ <div class="stage" aria-label="Four scattered documents">
+  <div class="abs pop doc" style="--r:-6deg;left:2%;top:8%;width:42%"><b>Zoning code</b>Page 214 of 600</div>
+  <div class="abs pop doc" style="--r:4deg;--d:.25s;right:2%;top:2%;width:42%"><b>Site plan</b>PDF, 48 MB</div>
+  <div class="abs pop doc" style="--r:-3deg;--d:.5s;left:10%;top:48%;width:42%"><b>Agenda</b>Posted somewhere</div>
+  <div class="abs pop sign" style="--r:5deg;--d:.75s;right:4%;top:50%;width:44%;font-size:.8rem">NOTICE<br>(the one you saw)</div>
+  <div class="abs pop hand" style="--r:-5deg;--d:1s;left:6%;bottom:2%">four places, no map</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 1. Every project, one map.</h2><p>Each pin is a development site. Pan and zoom around Ann Arbor and see what's changing.</p></div>
+ <div class="stage" aria-label="A map with pins dropping in">
+  <div class="abs pop map" style="left:0;top:0;width:100%;height:100%;--r:0deg">
+   <svg viewBox="0 0 400 440" preserveAspectRatio="xMidYMid slice"><path d="M0 330C90 300 170 380 260 340S360 320 400 335V440H0Z" fill="#bcd9ea"/><g stroke="#fff" stroke-width="9" fill="none"><path d="M0 140H400"/><path d="M130 0V440"/><path d="M290 0V440"/><path d="M0 70L400 230"/></g></svg>
+  </div>
+  <div class="abs pop pin" style="--d:.5s;left:30%;top:28%"><i></i></div>
+  <div class="abs pop pin" style="--d:.75s;left:70%;top:22%"><i></i></div>
+  <div class="abs pop pin" style="--d:1s;left:48%;top:46%"><i></i></div>
+  <div class="abs pop pin" style="--d:1.25s;left:76%;top:56%"><i></i></div>
+  <div class="abs pop pin" style="--d:1.5s;left:14%;top:12%"><i></i></div>
+  <div class="abs pop hand" style="--r:-6deg;--d:1.8s;left:6%;bottom:6%;background:#fff;padding:.2rem .5rem;border:2px solid var(--ink)">drawn map, not live</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 2. Type your address.</h2><p>The map jumps to your block and circles the projects near you.</p></div>
+ <div class="stage" aria-label="Address search and a map recentering">
+  <div class="abs pop map" style="left:0;top:0;width:100%;height:100%"><svg viewBox="0 0 400 440" preserveAspectRatio="xMidYMid slice"><g stroke="#fff" stroke-width="9" fill="none"><path d="M0 230H400"/><path d="M200 0V440"/></g></svg></div>
+  <div class="abs pop" style="--d:.2s;left:5%;right:5%;top:5%"><div class="sbar"><div class="t ui" style="font-family:Arial"><span class="type">301 E Liberty St</span></div><b>Search</b></div></div>
+  <div class="abs pop ring" style="--d:2.4s;left:calc(50% - 75px);top:calc(52% - 75px)"></div>
+  <div class="abs pop pin me" style="--d:2.4s;left:calc(50% - 15px);top:calc(52% - 15px)"><i></i></div>
+  <div class="abs pop pin" style="--d:2.8s;left:62%;top:38%"><i></i></div>
+  <div class="abs pop pin" style="--d:3s;left:34%;top:62%"><i></i></div>
+  <div class="abs pop hand" style="--r:-4deg;--d:3.3s;right:6%;bottom:6%;background:#fff;padding:.2rem .5rem;border:2px solid var(--ink)">2 projects within a mile</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 3. Click a pin.</h2><p>A card pops up with the address, a plain-English description, and where the project stands.</p></div>
+ <div class="stage" aria-label="A project card popping up">
+  <div class="abs pop pin" style="left:20%;top:12%"><i></i></div>
+  <div class="abs pop card" style="--r:2deg;--d:.6s;left:12%;top:26%;width:76%"><h3>Sample Site A</h3><div>Downtown Ann Arbor (placeholder)</div><span class="tag">Under review</span><p style="margin:.3rem 0 .5rem">A mixed-use building is proposed on a vacant lot.</p><span class="btn">Learn more</span></div>
+  <div class="abs pop hand" style="--r:-7deg;--d:1.2s;right:2%;top:4%">tap me!</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 4. Then vs. maybe-someday.</h2><p>Where plans are on file, today's property sits next to the proposal. Where they aren't, the page says so.</p></div>
+ <div class="stage" aria-label="Two photos, today and proposed">
+  <div class="abs pop polaroid" style="--r:-5deg;left:2%;top:10%;width:46%"><div class="tape"></div><i>photo goes here</i><span class="hand">today</span></div>
+  <div class="abs pop polaroid" style="--r:4deg;--d:.4s;right:2%;top:24%;width:46%"><div class="tape"></div><i>rendering goes here</i><span class="hand">proposed</span></div>
+  <div class="abs pop hand" style="--r:-3deg;--d:.9s;left:8%;bottom:12%">no rendering on file? the page says "Not yet established."</div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 5. The zoning, in plain words.</h2><p>The zoning district and the city's own documents, one click away.</p></div>
+ <div class="stage" aria-label="A fan of zoning documents">
+  <div class="abs pop doc" style="--r:-8deg;left:4%;top:8%;width:62%"><b>Zoning</b>D1 Downtown Core (placeholder). Allows tall, dense buildings near the center of town.</div>
+  <div class="abs pop doc" style="--r:3deg;--d:.35s;left:22%;top:38%;width:62%"><b>Site plan</b><u>Open the city document</u></div>
+  <div class="abs pop doc" style="--r:-2deg;--d:.7s;left:8%;top:66%;width:62%"><b>Elevations</b><span class="nf">Not yet established</span></div>
+ </div>
+</div>
+
+<div class="sec">
+ <div class="txt"><h2>Step 6. Where it stands. How to weigh in.</h2><p>A short timeline shows the documented status. If a public meeting is on record, it shows up here. If not, the page says that and points to the city planning office.</p></div>
+ <div class="stage" aria-label="A timeline of project status">
+  <div class="abs pop tl" style="left:4%;top:4%;width:70%">Application submitted</div>
+  <div class="abs pop tl now" style="--d:.4s;left:12%;top:26%;width:70%"><b>Under review</b> (current)</div>
+  <div class="abs pop tl" style="--d:.8s;left:4%;top:48%;width:70%">Public meeting: <span class="nf">date not yet established</span></div>
+  <div class="abs pop tl" style="--d:1.2s;left:12%;top:70%;width:70%">Decision</div>
+  <div class="abs pop bub" style="--r:10deg;--d:1.7s;right:2%;top:34%;width:96px;height:96px;background:var(--teal);font-size:.95rem">your turn!</div>
+ </div>
+</div>
+
+<footer>
+ <p class="hand" style="font-size:1.6rem">Next: decide which records exist for every Ann Arbor property.</p>
+ <p class="note" style="margin-top:1rem">Prototype for coursework. Not an official City of Ann Arbor site.</p>
+</footer>
+
+<script>
+const stages=document.querySelectorAll('.stage');
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.35});
+stages.forEach(s=>{
+ io.observe(s);
+ s.insertAdjacentHTML('beforeend','<span class="cap">click to replay</span>');
+ s.addEventListener('click',()=>{s.classList.remove('in');void s.offsetWidth;s.classList.add('in')});
+});
+</script>
+</body>
+</html>
